@@ -534,7 +534,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
     case SafetyChannelCustomFunction:
       return id.contains("nooverridech") ? 0 : 1;
     case LogicalSwitches:
-      return 64;
+      return 128;
     case CustomAndSwitches:
       return getCapability(LogicalSwitches);
     case LogicalSwitchesExt:

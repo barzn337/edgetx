@@ -203,7 +203,7 @@ inline int MAX_GYRO_ANALOGS(Board::Type board, int version)
 #define MAX_CHANNELS(board, version)          32
 #define MAX_TRIMS(board)                      (Boards::getCapability(board, Board::NumTrims))
 #define MAX_EXPOS(board, version)             (IS_HORUS_OR_TARANIS(board) ? 64 : 32)
-#define MAX_LOGICAL_SWITCHES(board, version)  (version >= 218 ? 64 : 32)
+#define MAX_LOGICAL_SWITCHES(board, version)  (version >= 218 ? 128 : 32)
 #define MAX_CUSTOM_FUNCTIONS(board, version)  64
 #define MAX_CURVES(board, version)            ((version >= 219 || HAS_LARGE_LCD(board)) ? 32 : 16)
 #define MAX_GVARS(board, version)             9

@@ -46,7 +46,7 @@
   #define MAX_FLIGHT_MODES             9
   #define MAX_MIXERS                   64
   #define MAX_EXPOS                    64
-  #define MAX_LOGICAL_SWITCHES         64
+  #define MAX_LOGICAL_SWITCHES         128
   #define MAX_SPECIAL_FUNCTIONS        64 // number of functions assigned to switches
   #define MAX_SCRIPTS                  9
   #define MAX_INPUTS                   32
@@ -61,7 +61,7 @@
   #define MAX_FLIGHT_MODES             9
   #define MAX_MIXERS                   64
   #define MAX_EXPOS                    64
-  #define MAX_LOGICAL_SWITCHES         64
+  #define MAX_LOGICAL_SWITCHES         128
   #define MAX_SPECIAL_FUNCTIONS        64 // number of functions assigned to switches
   #define MAX_SCRIPTS                  7
   #define MAX_INPUTS                   32
@@ -75,7 +75,7 @@
   #define MAX_FLIGHT_MODES             9
   #define MAX_MIXERS                   64
   #define MAX_EXPOS                    64
-  #define MAX_LOGICAL_SWITCHES         64
+  #define MAX_LOGICAL_SWITCHES         128
   #define MAX_SPECIAL_FUNCTIONS        64 // number of functions assigned to switches
   #define MAX_SCRIPTS                  7
   #define MAX_INPUTS                   32
