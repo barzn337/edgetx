@@ -1,8 +1,7 @@
 #! /usr/bin/env bash
 
-## Bash script to show how to get EdgeTX source from GitHub,
-## how to build radio firmware, Companion, Simulator, Simulator
-## Library and how to create an installation package.
+## Bash script to show how to get EdgeTX source from GitHub
+## and how to create an installation package.
 ## Let it run as normal user in MSYS2 MinGW 64-bit console (blue icon).
 ##
 ## Note #1: This script is tested to work properly only for the branch it stems from.
@@ -22,16 +21,12 @@ export VER_SUFF="barzn"
 export VER_CODENAME="Providence"
 export VER_FULL="v${VER_NUM}-${VER_SUFF}-${VER_CODENAME}"
 
-export RADIO_TYPE="tx16s"	# tx16s|x10|x10-access|x12s|x9d|x9dp|x9lite|x9lites|x7|x7-access|t12|tx12|tx12mk2|boxer|t8|zorro|tlite|tpro|lr3pro|xlite|xlites|x9dp2019|x9e|x9e-hall|t16|t18|nv14|commando8|
-export BUILD_OPTIONS="-DDEFAULT_MODE=2 -DGVARS=YES -DPPM_UNIT=US -DLUA=YES -DLUA_MIXER=YES -DINTERNAL_GPS=ON -DHELI=YES -DVERSION_SUFFIX=${VER_SUFF}"
-
 export BDT="`date +%Y%m%d%H%M%S`"	# Build Date & Time
 export PROJ_DIR="${HOME}/edgetx"
 export SOURCE_DIR="${PROJ_DIR}/edgetx_${BRANCH_NAME}"
-export BUILD_OUTPUT_DIR="${SOURCE_DIR}/build-output-all-${RADIO_TYPE}_${BDT}"
+export BUILD_OUTPUT_DIR="${SOURCE_DIR}/build-output-cpn_${BDT}"
 export RELEASE_DIR="${PROJ_DIR}/Release-${VER_FULL}_${BDT}"
 
-export FW_FILE_NAME="fw_${RADIO_TYPE}_${VER_FULL}_mode2-gvars-ppmus-lua-luamixer-gps-heli_release.bin"
 export INSTALLER_FILE_NAME="companion-windows-${VER_FULL}.exe"
 
 PAUSEAFTEREACHLINE="false" # true|false
@@ -39,100 +34,9 @@ DELETEBUILDOUTPUT="flase" # true|false
 DELETESOURCECODE="false" # true|false
 
 STEP=1
-STEPS=14
+STEPS=9
 
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-case $RADIO_TYPE in
-    x9lite)
-        BUILD_OPTIONS+=" -DPCB=X9LITE"
-        ;;
-    x9lites)
-        BUILD_OPTIONS+=" -DPCB=X9LITES"
-        ;;
-    x7)
-        BUILD_OPTIONS+=" -DPCB=X7"
-        ;;
-    x7-access)
-        BUILD_OPTIONS+=" -DPCB=X7 -DPCBREV=ACCESS -DPXX1=YES"
-        ;;
-    t12)
-        BUILD_OPTIONS+=" -DPCB=X7 -DPCBREV=T12 -DINTERNAL_MODULE_MULTI=ON"
-        ;;
-    tx12)
-        BUILD_OPTIONS+=" -DPCB=X7 -DPCBREV=TX12"
-        ;;
-    tx12mk2)
-        BUILD_OPTIONS+=" -DPCB=X7 -DPCBREV=TX12MK2"
-        ;;
-    boxer)
-        BUILD_OPTIONS+=" -DPCB=X7 -DPCBREV=BOXER"
-        ;;
-    t8)
-        BUILD_OPTIONS+=" -DPCB=X7 -DPCBREV=T8"
-        ;;
-    zorro)
-        BUILD_OPTIONS+=" -DPCB=X7 -DPCBREV=ZORRO"
-        ;;
-    tlite)
-        BUILD_OPTIONS+=" -DPCB=X7 -DPCBREV=TLITE"
-        ;;
-    tpro)
-        BUILD_OPTIONS+=" -DPCB=X7 -DPCBREV=TPRO"
-        ;;
-    lr3pro)
-        BUILD_OPTIONS+=" -DPCB=X7 -DPCBREV=LR3PRO"
-        ;;
-    xlite)
-        BUILD_OPTIONS+=" -DPCB=XLITE"
-        ;;
-    xlites)
-        BUILD_OPTIONS+=" -DPCB=XLITES"
-        ;;
-    x9d)
-        BUILD_OPTIONS+=" -DPCB=X9D"
-        ;;
-    x9dp)
-        BUILD_OPTIONS+=" -DPCB=X9D+"
-        ;;
-    x9dp2019)
-        BUILD_OPTIONS+=" -DPCB=X9D+ -DPCBREV=2019"
-        ;;
-    x9e)
-        BUILD_OPTIONS+=" -DPCB=X9E"
-        ;;
-    x9e-hall)
-        BUILD_OPTIONS+=" -DPCB=X9E -DSTICKS=HORUS"
-        ;;
-    x10)
-        BUILD_OPTIONS+=" -DPCB=X10"
-        ;;
-    x10-access)
-        BUILD_OPTIONS+=" -DPCB=X10 -DPCBREV=EXPRESS -DPXX1=YES"
-        ;;
-    x12s)
-        BUILD_OPTIONS+=" -DPCB=X12S"
-        ;;
-    t16)
-        BUILD_OPTIONS+=" -DPCB=X10 -DPCBREV=T16 -DINTERNAL_MODULE_MULTI=ON"
-        ;;
-    t18)
-        BUILD_OPTIONS+=" -DPCB=X10 -DPCBREV=T18"
-        ;;
-    tx16s)
-        BUILD_OPTIONS+=" -DPCB=X10 -DPCBREV=TX16S"
-        ;;
-    nv14)
-        BUILD_OPTIONS+=" -DPCB=NV14"
-        ;;
-    commando8)
-        BUILD_OPTIONS+=" -DPCB=X7 -DPCBREV=COMMANDO8"
-        ;;
-    *)
-        echo "Unknown target: $RADIO_TYPE"
-        exit 1
-        ;;
-esac
 
 function log() {
     echo ""
@@ -169,7 +73,7 @@ do
 	fi
 done
 
-echo "--- Build config: (All) ---"
+echo "--- Build config: (Companion) ---"
 echo "Build time: ${BDT}"
 echo "GIT_REPO: ${GIT_REPO}"
 echo "BRANCH_NAME: ${BRANCH_NAME}"
@@ -177,8 +81,6 @@ echo "PROJ_DIR: ${PROJ_DIR}"
 echo "SOURCE_DIR: ${SOURCE_DIR}"
 echo "BUILD_OUTPUT_DIR: ${BUILD_OUTPUT_DIR}"
 echo "RELEASE_DIR: ${RELEASE_DIR}"
-echo "RADIO_TYPE: ${RADIO_TYPE}"
-echo "BUILD_OPTIONS: ${BUILD_OPTIONS}"
 echo -e "\n\n"
 
 echo "=== Step #$((STEP++))/$STEPS: Creating a directory for EdgeTX ==="
@@ -219,57 +121,17 @@ if [[ $PAUSEAFTEREACHLINE == "true" ]]; then
   read
 fi
 
-echo "=== Step #$((STEP++))/$STEPS: Running CMake for ${RADIO_TYPE} with selected build options ==="
-cmake -G "MSYS Makefiles" -Wno-dev -DCMAKE_PREFIX_PATH=$HOME/5.12.9/mingw73_64 -DSDL2_LIBRARY_PATH=/mingw64/bin/ ${BUILD_OPTIONS} -DCMAKE_BUILD_TYPE=Release ../
-check_command $? "cmake -G MSYS Makefiles -Wno-dev -DCMAKE_PREFIX_PATH=$HOME/5.12.9/mingw73_64 -DSDL2_LIBRARY_PATH=/mingw64/bin/ ${BUILD_OPTIONS} -DCMAKE_BUILD_TYPE=Release ../"
+echo "=== Step #$((STEP++))/$STEPS: Running CMake ==="
+cmake -G "MSYS Makefiles" -Wno-dev -DCMAKE_PREFIX_PATH=$HOME/5.12.9/mingw73_64 -DSDL2_LIBRARY_PATH=/mingw64/bin/ -DVERSION_SUFFIX=${VER_SUFF} -DCMAKE_BUILD_TYPE=Release ../
+check_command $? "cmake -G MSYS Makefiles -Wno-dev -DCMAKE_PREFIX_PATH=$HOME/5.12.9/mingw73_64 -DSDL2_LIBRARY_PATH=/mingw64/bin/ -DCMAKE_BUILD_TYPE=Release ../"
 if [[ $PAUSEAFTEREACHLINE == "true" ]]; then
   echo "Step finished. Please check the output above and press Enter to continue or Ctrl+C to stop."
   read
 fi
 
 echo "=== Step #$((STEP++))/$STEPS: Running Make configure ==="
-make configure
-check_command $? "make configure"
-if [[ $PAUSEAFTEREACHLINE == "true" ]]; then
-  echo "Step finished. Please check the output above and press Enter to continue or Ctrl+C to stop."
-  read
-fi
-
-echo "=== Step #$((STEP++))/$STEPS: Building Firmware binary ==="
-make -C arm-none-eabi -j`nproc` firmware
-check_command $? "make -C arm-none-eabi -j`nproc` firmware"
-if [[ $PAUSEAFTEREACHLINE == "true" ]]; then
-  echo "Step finished. Please check the output above and press Enter to continue or Ctrl+C to stop."
-  read
-fi
-
-echo "=== Step #$((STEP++))/$STEPS: Renaming Firmware binary ==="
-mv arm-none-eabi/firmware.bin arm-none-eabi/${FW_FILE_NAME}
-check_command $? "mv arm-none-eabi/firmware.bin arm-none-eabi/${FW_FILE_NAME}"
-if [[ $PAUSEAFTEREACHLINE == "true" ]]; then
-  echo "Step finished. Please check the output above and press Enter to continue or Ctrl+C to stop."
-  read
-fi
-
-echo "=== Step #$((STEP++))/$STEPS: Building Companion ==="
-make -C native -j`nproc` companion
-check_command $? "make -C native -j`nproc` companion"
-if [[ $PAUSEAFTEREACHLINE == "true" ]]; then
-  echo "Step finished. Please check the output above and press Enter to continue or Ctrl+C to stop."
-  read
-fi
-
-echo "=== Step #$((STEP++))/$STEPS: Building Simulator ==="
-make -C native -j`nproc` simulator
-check_command $? "make -C native -j`nproc` simulator"
-if [[ $PAUSEAFTEREACHLINE == "true" ]]; then
-  echo "Step finished. Please check the output above and press Enter to continue or Ctrl+C to stop."
-  read
-fi
-
-echo "=== Step #$((STEP++))/$STEPS: Building Simulator library ==="
-make -C native -j`nproc` libsimulator
-check_command $? "make -C native -j`nproc` libsimulator"
+make native-configure
+check_command $? "make native-configure"
 if [[ $PAUSEAFTEREACHLINE == "true" ]]; then
   echo "Step finished. Please check the output above and press Enter to continue or Ctrl+C to stop."
   read
@@ -299,10 +161,6 @@ if [[ $PAUSEAFTEREACHLINE == "true" ]]; then
 fi
 
 echo "=== Step #$((STEP++))/$STEPS: Zipping release files ==="
-cd ${BUILD_OUTPUT_DIR}/arm-none-eabi
-check_command $? "cd ${BUILD_OUTPUT_DIR}/arm-none-eabi"
-zip ${RELEASE_DIR}/edgetx-firmware-v${VER_NUM}.zip ${FW_FILE_NAME}
-check_command $? "zip ${RELEASE_DIR}/edgetx-firmware-v${VER_NUM}.zip ${FW_FILE_NAME}"
 cd ${BUILD_OUTPUT_DIR}/native/companion
 check_command $? "cd ${BUILD_OUTPUT_DIR}/native/companion"
 zip ${RELEASE_DIR}/edgetx-cpn-win64-v${VER_NUM}.zip ${INSTALLER_FILE_NAME}
@@ -319,11 +177,7 @@ if [[ $PAUSEAFTEREACHLINE == "true" ]]; then
 fi
 
 echo -e "Done.\n\n"
-echo "Firmware (${RADIO_TYPE}): ${BUILD_OUTPUT_DIR}/arm-none-eabi/${FW_FILE_NAME}"
 echo "Companion installer     : ${BUILD_OUTPUT_DIR}/native/companion/${INSTALLER_FILE_NAME}"
-echo "Companion               : ${BUILD_OUTPUT_DIR}/native/Release/companion.exe"
-echo "Simulator               : ${BUILD_OUTPUT_DIR}/native/Release/simulator.exe"
-echo "Simulator library       : ${BUILD_OUTPUT_DIR}/native/Release/libedgetx-${RADIO_TYPE}-simulator.dll"
 echo "Zipped release files at : ${RELEASE_DIR}"
 echo -e "\n\n"
 

@@ -5,6 +5,8 @@
 
 PAUSEAFTEREACHLINE="false"
 STEP=1
+STEPS=2
+
 # Parse argument(s)
 for arg in "$@"
 do
@@ -13,14 +15,14 @@ do
 	fi
 done
 
-echo "=== Step $((STEP++)): Updating MSYS2 base packages ==="
+echo "=== Step $((STEP++))/${STEPS}: Updating MSYS2 base packages ==="
 pacman -Su --noconfirm
 if [[ $PAUSEAFTEREACHLINE == "true" ]]; then
   echo "Step finished. Please check the output above and press Enter to continue or Ctrl+C to stop."
   read
 fi
 
-echo "=== Step $((STEP++)): Installing system wide packages ==="
+echo "=== Step $((STEP++))/${STEPS}: Installing system wide packages ==="
 pacman -S --noconfirm git make mingw-w64-x86_64-toolchain
 if [[ $PAUSEAFTEREACHLINE == "true" ]]; then
   echo "Step finished. Please check the output above and press Enter to continue or Ctrl+C to stop."

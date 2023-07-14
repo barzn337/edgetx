@@ -1,12 +1,10 @@
 #! /usr/bin/env bash
 
-## Bash script to show how to get EdgeTX source from GitHub,
-## how to build radio firmware, Companion, Simulator, Simulator
-## Library and how to create an installation package.
+## Bash script to show how to get EdgeTX source from GitHub
+## and how to build radio firmware.
 ## Let it run as normal user in MSYS2 MinGW 64-bit console (blue icon).
 ##
-## Note #1: This script is tested to work properly only for the branch it stems from.
-## Note #2: This script is intended for native Windows 64bit (mainly files naming...).
+## Note: This script is tested to work properly only for the branch it stems from.
 ##
 ## @args:
 ## To pause after each step of the script invoke with --pause
@@ -28,18 +26,17 @@ export BUILD_OPTIONS="-DDEFAULT_MODE=2 -DGVARS=YES -DPPM_UNIT=US -DLUA=YES -DLUA
 export BDT="`date +%Y%m%d%H%M%S`"	# Build Date & Time
 export PROJ_DIR="${HOME}/edgetx"
 export SOURCE_DIR="${PROJ_DIR}/edgetx_${BRANCH_NAME}"
-export BUILD_OUTPUT_DIR="${SOURCE_DIR}/build-output-all-${RADIO_TYPE}_${BDT}"
+export BUILD_OUTPUT_DIR="${SOURCE_DIR}/build-output-fw-${RADIO_TYPE}_${BDT}"
 export RELEASE_DIR="${PROJ_DIR}/Release-${VER_FULL}_${BDT}"
 
 export FW_FILE_NAME="fw_${RADIO_TYPE}_${VER_FULL}_mode2-gvars-ppmus-lua-luamixer-gps-heli_release.bin"
-export INSTALLER_FILE_NAME="companion-windows-${VER_FULL}.exe"
 
 PAUSEAFTEREACHLINE="false" # true|false
 DELETEBUILDOUTPUT="flase" # true|false
 DELETESOURCECODE="false" # true|false
 
 STEP=1
-STEPS=14
+STEPS=9
 
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -169,7 +166,7 @@ do
 	fi
 done
 
-echo "--- Build config: (All) ---"
+echo "--- Build config: (Firmware) ---"
 echo "Build time: ${BDT}"
 echo "GIT_REPO: ${GIT_REPO}"
 echo "BRANCH_NAME: ${BRANCH_NAME}"
@@ -228,8 +225,8 @@ if [[ $PAUSEAFTEREACHLINE == "true" ]]; then
 fi
 
 echo "=== Step #$((STEP++))/$STEPS: Running Make configure ==="
-make configure
-check_command $? "make configure"
+make arm-none-eabi-configure
+check_command $? "make arm-none-eabi-configure"
 if [[ $PAUSEAFTEREACHLINE == "true" ]]; then
   echo "Step finished. Please check the output above and press Enter to continue or Ctrl+C to stop."
   read
@@ -251,45 +248,6 @@ if [[ $PAUSEAFTEREACHLINE == "true" ]]; then
   read
 fi
 
-echo "=== Step #$((STEP++))/$STEPS: Building Companion ==="
-make -C native -j`nproc` companion
-check_command $? "make -C native -j`nproc` companion"
-if [[ $PAUSEAFTEREACHLINE == "true" ]]; then
-  echo "Step finished. Please check the output above and press Enter to continue or Ctrl+C to stop."
-  read
-fi
-
-echo "=== Step #$((STEP++))/$STEPS: Building Simulator ==="
-make -C native -j`nproc` simulator
-check_command $? "make -C native -j`nproc` simulator"
-if [[ $PAUSEAFTEREACHLINE == "true" ]]; then
-  echo "Step finished. Please check the output above and press Enter to continue or Ctrl+C to stop."
-  read
-fi
-
-echo "=== Step #$((STEP++))/$STEPS: Building Simulator library ==="
-make -C native -j`nproc` libsimulator
-check_command $? "make -C native -j`nproc` libsimulator"
-if [[ $PAUSEAFTEREACHLINE == "true" ]]; then
-  echo "Step finished. Please check the output above and press Enter to continue or Ctrl+C to stop."
-  read
-fi
-
-echo "=== Step #$((STEP++))/$STEPS: Making an installer ==="
-make -C native installer
-check_command $? "make -C native installer"
-if [[ $PAUSEAFTEREACHLINE == "true" ]]; then
-  echo "Step finished. Please check the output above and press Enter to continue or Ctrl+C to stop."
-fi
-
-echo "=== Step #$((STEP++))/$STEPS: Renaming installer ==="
-mv native/companion/companion-windows-${VER_NUM}.exe native/companion/${INSTALLER_FILE_NAME}
-check_command $? "mv native/companion/companion-windows-${VER_NUM}.exe native/companion/${INSTALLER_FILE_NAME}"
-if [[ $PAUSEAFTEREACHLINE == "true" ]]; then
-  echo "Step finished. Please check the output above and press Enter to continue or Ctrl+C to stop."
-  read
-fi
-
 echo "=== Step #$((STEP++))/$STEPS: Creating release files directory ==="
 mkdir -p ${RELEASE_DIR}
 check_command $? "mkdir -p ${RELEASE_DIR}"
@@ -303,10 +261,6 @@ cd ${BUILD_OUTPUT_DIR}/arm-none-eabi
 check_command $? "cd ${BUILD_OUTPUT_DIR}/arm-none-eabi"
 zip ${RELEASE_DIR}/edgetx-firmware-v${VER_NUM}.zip ${FW_FILE_NAME}
 check_command $? "zip ${RELEASE_DIR}/edgetx-firmware-v${VER_NUM}.zip ${FW_FILE_NAME}"
-cd ${BUILD_OUTPUT_DIR}/native/companion
-check_command $? "cd ${BUILD_OUTPUT_DIR}/native/companion"
-zip ${RELEASE_DIR}/edgetx-cpn-win64-v${VER_NUM}.zip ${INSTALLER_FILE_NAME}
-check_command $? "zip ${RELEASE_DIR}/edgetx-cpn-win64-v${VER_NUM}.zip ${INSTALLER_FILE_NAME}"
 cd ${SOURCE_DIR}
 check_command $? "cd ${SOURCE_DIR}"
 git archive -o edgetx-v${VER_NUM}.zip HEAD
@@ -320,10 +274,6 @@ fi
 
 echo -e "Done.\n\n"
 echo "Firmware (${RADIO_TYPE}): ${BUILD_OUTPUT_DIR}/arm-none-eabi/${FW_FILE_NAME}"
-echo "Companion installer     : ${BUILD_OUTPUT_DIR}/native/companion/${INSTALLER_FILE_NAME}"
-echo "Companion               : ${BUILD_OUTPUT_DIR}/native/Release/companion.exe"
-echo "Simulator               : ${BUILD_OUTPUT_DIR}/native/Release/simulator.exe"
-echo "Simulator library       : ${BUILD_OUTPUT_DIR}/native/Release/libedgetx-${RADIO_TYPE}-simulator.dll"
 echo "Zipped release files at : ${RELEASE_DIR}"
 echo -e "\n\n"
 
